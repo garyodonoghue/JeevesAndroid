@@ -17,12 +17,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
 import com.jeevesandroid.ApplicationContext;
 import com.jeevesandroid.R;
 import com.jeevesandroid.SurveyActivity;
 import com.jeevesandroid.firebase.FirebaseSurvey;
 import com.jeevesandroid.firebase.FirebaseUtils;
-import com.google.firebase.database.DatabaseReference;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.TriggerUtils;
 
@@ -88,7 +88,7 @@ public class SurveyAction extends FirebaseAction {
 
 
             //Now we push the missed result to the database.
-            Map<String,Object> surveymap = new HashMap<String,Object>();
+            Map<String,Object> surveymap = new HashMap<>();
             surveymap.put(STATUS,0);
             surveymap.put(INIT_TIME,initTime-timeSent);
             surveymap.put(TRIG_TYPE,intent.getIntExtra(TRIG_TYPE,0));
@@ -109,7 +109,9 @@ public class SurveyAction extends FirebaseAction {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public boolean execute() {
         final Context app = ApplicationContext.getContext();
-        if(getparams().get("survey") == null)return false;
+        if(getparams().get("survey") == null) {
+            return false;
+        }
         final String surveyname = getparams().get("survey").toString();
 
 
@@ -140,7 +142,7 @@ public class SurveyAction extends FirebaseAction {
         currentsurvey.settimeSent(timeSent);
         currentsurvey.settriggerType((int)getparams().get(TRIG_TYPE));
         newPostRef.setValue(currentsurvey);
-        final String newPostRefId = newPostRef.getKey();
+        String newPostRefId = newPostRef.getKey();
         //If this has an expiry time, we set our 'time to go', i.e. how long the user has to complete the survey
         long expiryTime = currentsurvey.getexpiryTime();
         long expiryMillis = expiryTime * 60 * 1000;
@@ -199,7 +201,7 @@ public class SurveyAction extends FirebaseAction {
         action2Intent.putExtra(NOTIF_ID, thisActionsId);
         PendingIntent action2PendingIntent = PendingIntent.getService(app, 0, action2Intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        final NotificationManager notificationManager = (NotificationManager) app.getSystemService(app.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) app.getSystemService(app.NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(app)
                 .setContentTitle("You have a new survey available")
@@ -260,9 +262,9 @@ public class SurveyAction extends FirebaseAction {
             Log.e("screen on....", ""+isScreenOn);
             if(isScreenOn==false)
             {
-                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK |PowerManager.ACQUIRE_CAUSES_WAKEUP |PowerManager.ON_AFTER_RELEASE,"MyLock");
+                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "Jeeves:MyLock");
                 wl.acquire(10000);
-                PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
+                PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Jeeves:MyCpuLock");
 
                 wl_cpu.acquire(10000);
             }
@@ -321,7 +323,7 @@ public class SurveyAction extends FirebaseAction {
                 resultIntent.putExtra(TRIG_TYPE,triggertype);
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
-                this.startActivity(resultIntent);
+                startActivity(resultIntent);
 
             }
             if (ACTION_2.equals(action)) {

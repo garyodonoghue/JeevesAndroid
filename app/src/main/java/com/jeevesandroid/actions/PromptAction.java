@@ -25,7 +25,9 @@ public class PromptAction extends FirebaseAction {
         Log.d("GET HERE","DID I GET TO EXECUTE");
         int notificationId = Integer.parseInt("8" + count++);
         Context app = ApplicationContext.getContext();
-        if(!getparams().containsKey("msgtext"))return false;
+        if(!getparams().containsKey("msgtext")) {
+            return false;
+        }
         String text = getparams().get("msgtext").toString();
         NotificationManager notificationManager =
                 (NotificationManager) app.getSystemService(app.NOTIFICATION_SERVICE);
@@ -40,9 +42,9 @@ public class PromptAction extends FirebaseAction {
         Log.e("screen on....", ""+isScreenOn);
         if(isScreenOn==false)
         {
-            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK |PowerManager.ACQUIRE_CAUSES_WAKEUP |PowerManager.ON_AFTER_RELEASE,"MyLock");
+            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "Jeeves:MyLock");
             wl.acquire(10000);
-            PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
+            PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Jeeves:MyCpuLock");
 
             wl_cpu.acquire(10000);
         }
